@@ -49,5 +49,5 @@ extern "C" cudaError_t kernel_MattingPicture(void * srcImage, int srcWidth, int 
 	if (cudaStatus != cudaSuccess) {
 		fprintf(stderr, "cudaDeviceSynchronize returned error code %d after launching addKernel!\n", cudaStatus);
 	}
-	return cudaSuccess;
+	return cudaStatus;
 }

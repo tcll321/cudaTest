@@ -56,7 +56,13 @@ int ImageMatting::MattingImage(void * srcImage, int srcWidth, int srcHeight, voi
 		fprintf(stderr, "cudaMalloc failed: %s\n", cudaGetErrorString(cudaStatus));
 		return -1;
 	}
-	kernel_MattingPicture(srcImage, srcWidth, srcHeight, pDstImage, x, y, dstWidth, dstHeight);
+	cudaStatus = kernel_MattingPicture(srcImage, srcWidth, srcHeight, pDstImage, x, y, dstWidth, dstHeight);
+	if (cudaStatus != cudaSuccess)
+	{
+		cudaFree(pDstImage);
+		fprintf(stderr, "kernel_MattingPicture failed: %s\n", cudaGetErrorString(cudaStatus));
+		return -1;
+	}
 	cudaStatus = cudaMemcpy(dstImage, pDstImage, dstWidth*dstHeight * 3, cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess)
 	{
@@ -100,7 +106,13 @@ int ImageMatting::MattingImageGpu(void * srcImage, int srcWidth, int srcHeight, 
 		fprintf(stderr, "cudaMalloc failed: %s\n", cudaGetErrorString(cudaStatus));
 		return -1;
 	}
-	kernel_MattingPicture(pcuSrcImage, srcWidth, srcHeight, pDstImage, x, y, dstWidth, dstHeight);
+	cudaStatus = kernel_MattingPicture(pcuSrcImage, srcWidth, srcHeight, pDstImage, x, y, dstWidth, dstHeight);
+	if (cudaStatus != cudaSuccess)
+	{
+		cudaFree(pDstImage);
+		fprintf(stderr, "kernel_MattingPicture failed: %s\n", cudaGetErrorString(cudaStatus));
+		return -1;
+	}
 	cudaStatus = cudaMemcpy(dstImage, pDstImage, dstWidth*dstHeight * 3, cudaMemcpyDeviceToHost);
 	if (cudaStatus != cudaSuccess)
 	{
